@@ -25,6 +25,7 @@ class AuthController extends Controller
     }
 return response()->json(['message' => 'User registered successfully'], 201); 
 }
+
 public function login(Request $request)
 {
     $request->validate([
@@ -41,5 +42,15 @@ public function login(Request $request)
     $token = $user->createToken('auth_token')->plainTextToken;
 
     return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
-
 }
+Public function logout(Request $request)
+{
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json(['message' => 'Logged out successfully']); 
+}
+    Public function me(Request $request)
+{
+    return response()->json($request->user());
+
+}}
