@@ -35,5 +35,20 @@ class AdminSeeder extends Seeder
             $organizer->role = 'organizer';
             $organizer->save();
         }
-    }
+
+
+        $organizer2 = User::firstOrCreate(
+    ['email' => 'organizer2@eventhub.test'],
+    [
+        'name' => 'Second Organizer',
+        'password' => Hash::make('password'),
+    ]
+);
+
+if ($organizer2->role !== 'organizer') {
+    $organizer2->role = 'organizer';
+    $organizer2->save();
+}
+    }    
+
 }

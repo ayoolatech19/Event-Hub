@@ -28,10 +28,16 @@ class CategoryController extends Controller
         return new CategoryResource($category);
     }
 
-    public function destroy(Category $category)
-    {
-        $category->delete();
-
-        return response()->json(['message' => 'Category deleted successfully.']);
+   public function destroy(Category $category)
+{
+    if ($category->events()->exists()) {
+        return response()->json([
+            'message' => 'Cannot delete a category that has events.',
+        ], 422);
     }
+
+    $category->delete();
+
+    return response()->json(['message' => 'Category deleted successfully.']);
+}
 }
