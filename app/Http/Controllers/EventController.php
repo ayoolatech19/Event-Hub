@@ -6,21 +6,28 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
-    public function index()
-    {
-        $events = Event::with(['category', 'organizer'])
-            ->where('status', 'published')
-            ->latest('date')
-            ->paginate(10);
+   public function index(Request $request)
+{
+    $events = Event::with(['category', 'organizer'])
+        ->where('status', 'published')
+        ->when($request->search, function ($query, $search) {
+            $query->where('title', 'like', "%{$search}%");
+        })
+        ->when($request->category, function ($query, $category) {
+            $query->where('category_id', $category);
+        })
+        ->latest('date')
+        ->paginate(10)
+        ->withQueryString();
 
-        return EventResource::collection($events);
-    }
-
+    return EventResource::collection($events);
+}
     public function show(Event $event)
     {
         if ($event->status !== 'published') {
