@@ -16,4 +16,8 @@ class EventPolicy
     {
         return $user->id === $event->user_id;
     }
+public function viewBookings(User $user, Event $event): bool
+{
+    return $user->id === $event->user_id;
 }
+    }

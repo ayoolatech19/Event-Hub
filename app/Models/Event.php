@@ -25,4 +25,15 @@ class Event extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+
+    public function bookings()
+{
+    return $this->hasMany(Booking::class);
+}
+
+public function ticketsBooked(): int
+{
+    return (int) $this->bookings()->where('status', 'confirmed')->sum('quantity');
+}
 }
