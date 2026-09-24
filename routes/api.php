@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\BookingController;
 
 Route::prefix('v1')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -29,5 +30,14 @@ Route::middleware(['auth:sanctum', 'role:organizer'])->group(function () {
     Route::post('events', [EventController::class, 'store']);
     Route::put('events/{event}', [EventController::class, 'update']);
     Route::delete('events/{event}', [EventController::class, 'destroy']);
+});
+Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
+    Route::post('events/{event}/bookings', [BookingController::class, 'store']);
+    Route::get('bookings', [BookingController::class, 'index']);
+    Route::delete('bookings/{booking}', [BookingController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum', 'role:organizer'])->group(function () {
+    Route::get('events/{event}/bookings', [BookingController::class, 'eventBookings']);
 });
 });
