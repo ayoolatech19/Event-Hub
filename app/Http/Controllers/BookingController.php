@@ -9,6 +9,8 @@ use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use App\Mail\BookingConfirmed;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -38,10 +40,13 @@ class BookingController extends Controller
                 'total_price' => $event->price * $quantity,
             ]);
         });
+$booking->load(['event', 'user']);
 
-        return (new BookingResource($booking->load('event')))
-            ->response()
-            ->setStatusCode(201);
+Mail::to($booking->user->email)->send(new BookingConfirmed($booking));
+
+return (new BookingResource($booking))
+    ->response()
+    ->setStatusCode(201);
     }
 
     // GET /bookings
