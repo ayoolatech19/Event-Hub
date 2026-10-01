@@ -29,7 +29,7 @@ class UpdateEventRequest extends FormRequest
             'venue'        => 'required|string|max:255',
             'date'         => 'required|date|after:now',
             'capacity'     => 'required|integer|min:1',
-            'price'        => 'required|numeric|min:0',
+            'price'        => 'required|integer|min:0',
             'banner_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'status'       => 'nullable|in:draft,published',
         ];

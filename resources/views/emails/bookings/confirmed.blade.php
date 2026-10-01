@@ -6,7 +6,7 @@ Hi {{ $booking->user->name }},
 Your booking for **{{ $booking->event->title }}** is confirmed.
 
 - **Tickets:** {{ $booking->quantity }}
-- **Total:** NGN {{ number_format($booking->total_price, 2) }}
+- **Total:** NGN {{ number_format($booking->total_price / 100, 2) }}
 - **Venue:** {{ $booking->event->venue }}
 - **Date:** {{ $booking->event->date->format('d M Y, g:i A') }}
 

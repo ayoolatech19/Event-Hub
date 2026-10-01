@@ -13,7 +13,8 @@ class Event extends Model
 
     protected $casts = [
         'date' => 'datetime',
-        'price' => 'decimal:2',
+        'price' => 'integer',
+        'tickets_sold' => 'integer',
     ];
 
     public function organizer()
@@ -31,9 +32,8 @@ class Event extends Model
 {
     return $this->hasMany(Booking::class);
 }
-
-public function ticketsBooked(): int
+public function ticketsRemaining(): int
 {
-    return (int) $this->bookings()->where('status', 'confirmed')->sum('quantity');
+    return $this->capacity - $this->tickets_sold;
 }
 }

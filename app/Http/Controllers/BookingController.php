@@ -26,13 +26,15 @@ class BookingController extends Controller
         $booking = DB::transaction(function () use ($request, $event, $quantity) {
             $event = Event::whereKey($event->id)->lockForUpdate()->first();
 
-            $remaining = $event->capacity - $event->ticketsBooked();
+            $remaining = $event->capacity - $event->tickets_sold;
 
             if ($quantity > $remaining) {
                 abort(response()->json([
                     'message' => "Only {$remaining} ticket(s) left for this event.",
                 ], 422));
             }
+
+            $event->increment('tickets_sold', $quantity);
 
             return $request->user()->bookings()->create([
                 'event_id' => $event->id,
@@ -69,6 +71,12 @@ return (new BookingResource($booking))
         if ($booking->status === 'cancelled') {
             return response()->json(['message' => 'Booking is already cancelled.'], 422);
         }
+      
+    DB::transaction(function () use ($booking) {
+        $booking->event()->lockForUpdate()->first();
+        $booking->update(['status' => 'cancelled']);
+        $booking->event->decrement('tickets_sold', $booking->quantity);
+    });
 
         $booking->update(['status' => 'cancelled']);
 

@@ -9,7 +9,7 @@ class Booking extends Model
     protected $fillable = ['event_id', 'quantity', 'total_price', 'status'];
 
     protected $casts = [
-        'total_price' => 'decimal:2',
+        'total_price' => 'integer',
     ];
 
     public function user()
