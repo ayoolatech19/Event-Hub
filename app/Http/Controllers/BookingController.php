@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use App\Mail\BookingConfirmed;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -40,7 +41,11 @@ class BookingController extends Controller
                 'event_id' => $event->id,
                 'quantity' => $quantity,
                 'total_price' => $event->price * $quantity,
-            ]);
+                'reference' => 'EVH-' . Str::upper(Str::random(16)),
+                'status' => 'pending',
+                'expires_at' => now()->addMinutes(15),
+                ]);
+
         });
 $booking->load(['event', 'user']);
 

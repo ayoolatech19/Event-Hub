@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $fillable = ['event_id', 'quantity', 'total_price', 'status'];
-
+    protected $fillable = ['event_id', 'quantity', 'total_price', 'status', 'reference', 'expires_at', 'paid_at'];
     protected $casts = [
         'total_price' => 'integer',
     ];
@@ -21,4 +20,8 @@ class Booking extends Model
     {
         return $this->belongsTo(Event::class);
     }
+    public function payments()
+{
+    return $this->hasMany(Payment::class);
+}
 }

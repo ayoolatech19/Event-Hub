@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
+
 
 Route::prefix('v1')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -39,5 +41,9 @@ Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:organizer'])->group(function () {
     Route::get('events/{event}/bookings', [BookingController::class, 'eventBookings']);
+});
+
+Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
+    Route::post('bookings/{reference}/pay', [PaymentController::class, 'pay']);
 });
 });
