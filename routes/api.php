@@ -9,6 +9,7 @@ use App\Http\Controllers\PaymentController;
 
 
 Route::prefix('v1')->group(function () {
+    Route::post('payments/webhook', [PaymentController::class, 'webhook']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     })->middleware('auth:sanctum');

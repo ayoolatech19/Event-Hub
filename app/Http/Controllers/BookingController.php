@@ -47,10 +47,6 @@ class BookingController extends Controller
                 ]);
 
         });
-$booking->load(['event', 'user']);
-
-Mail::to($booking->user->email)->send(new BookingConfirmed($booking));
-
 return (new BookingResource($booking))
     ->response()
     ->setStatusCode(201);
