@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use App\Mail\BookingConfirmed;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BookingController extends Controller
@@ -59,7 +60,8 @@ return (new BookingResource($booking))
             ->bookings()
             ->with('event.category')
             ->latest()
-            ->get();
+            ->get()
+            ->with('event.category', 'tickets');
 
         return BookingResource::collection($bookings);
     }

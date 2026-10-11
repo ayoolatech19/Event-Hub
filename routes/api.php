@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\PaymentController;
 
 
@@ -46,5 +47,12 @@ Route::middleware(['auth:sanctum', 'role:organizer'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
     Route::post('bookings/{reference}/pay', [PaymentController::class, 'pay']);
+});
+
+
+Route::middleware(['auth:sanctum', 'role:organizer,admin'])->group(function () {
+    Route::post('tickets/verify', [TicketController::class, 'verify']);
+    Route::post('tickets/check-in', [TicketController::class, 'checkIn']);
+    Route::get('events/{event}/attendance', [TicketController::class, 'attendance']);
 });
 });

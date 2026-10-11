@@ -21,6 +21,7 @@ class BookingResource extends JsonResource
         'status' => $this->status,
         'event' => new EventResource($this->whenLoaded('event')),
         'user' => new UserResource($this->whenLoaded('user')),
+        'tickets' => TicketResource::collection($this->whenLoaded('tickets')),
         'created_at' => $this->created_at,
         ];
 }}

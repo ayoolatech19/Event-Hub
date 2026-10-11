@@ -36,4 +36,8 @@ public function ticketsRemaining(): int
 {
     return $this->capacity - $this->tickets_sold;
 }
+public function tickets()
+{
+    return $this->hasManyThrough(Ticket::class, Booking::class);
+}
 }

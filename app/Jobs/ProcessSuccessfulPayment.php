@@ -11,6 +11,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\GenerateTickets;
 use RuntimeException;
 class ProcessSuccessfulPayment implements ShouldQueue
 {
@@ -64,6 +65,9 @@ try {
             return;
         }
 
+
+        
+
         DB::transaction(function () use ($booking, $verified) {
             $booking->update([
                 'status' => 'confirmed',
@@ -76,6 +80,11 @@ try {
                 'paid_at' => now(),
             ]);
         });
+        GenerateTickets::dispatch($booking->id);
+
+Mail::to($booking->user->email)->send(
+    new BookingConfirmed($booking->load(['event', 'user']))
+);
 
         Mail::to($booking->user->email)->send(new BookingConfirmed($booking->load(['event', 'user'])));
     }
