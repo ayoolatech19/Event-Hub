@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $fillable = ['event_id', 'quantity', 'total_price', 'status', 'reference', 'expires_at', 'paid_at'];
+    protected $fillable = ['event_id', 'quantity', 'total_price', 'status', 'reference', 'expires_at', 'paid_at','reminder_sent_at'];
     protected $casts = [
         'total_price' => 'integer',
+        'reminder_sent_at' => 'datetime',
     ];
 
     public function user()

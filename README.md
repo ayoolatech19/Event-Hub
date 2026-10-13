@@ -11,6 +11,25 @@
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
+
+
+
+
+## Queue worker vs scheduler
+
+`php artisan queue:work` processes jobs the application pushed onto the queue —
+confirmation emails, QR generation, payment processing. It reacts to things
+users did.
+
+`php artisan schedule:work` runs commands on a clock, whether or not anyone is
+using the app — expiring unpaid bookings every minute, sending event reminders
+daily at 09:00.
+
+Production needs both: one handles work triggered by users, the other handles
+work triggered by time. In production the queue worker runs under a process
+supervisor (Supervisor or systemd) so it restarts if it dies, and the scheduler
+is a single cron entry running `php artisan schedule:run` every minute.
+
 - [Simple, fast routing engine](https://laravel.com/docs/routing).
 - [Powerful dependency injection container](https://laravel.com/docs/container).
 - Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
