@@ -6,27 +6,38 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
-   public function index(Request $request)
+public function index(Request $request)
 {
-    $events = Event::with(['category', 'organizer'])
-        ->where('status', 'published')
-        ->when($request->search, function ($query, $search) {
-            $query->where('title', 'like', "%{$search}%");
-        })
-        ->when($request->category, function ($query, $category) {
-            $query->where('category_id', $category);
-        })
-        ->latest('date')
-        ->paginate(10)
-        ->withQueryString();
+    $key = 'events:' . md5(json_encode([
+        'page' => $request->integer('page', 1),
+        'search' => $request->search,
+        'category' => $request->category,
+    ]));
 
-    return EventResource::collection($events);
+    $payload = Cache::remember($key, now()->addMinutes(10), function () use ($request) {
+        $events = Event::with(['category', 'organizer'])
+            ->where('status', 'published')
+            ->when($request->search, function ($query, $search) {
+                $query->where('title', 'like', "%{$search}%");
+            })
+            ->when($request->category, function ($query, $category) {
+                $query->where('category_id', $category);
+            })
+            ->latest('date')
+            ->paginate(10)
+            ->withQueryString();
+
+        return EventResource::collection($events)->response()->getData(true);
+    });
+
+    return response()->json($payload);
 }
     public function show(Event $event)
     {

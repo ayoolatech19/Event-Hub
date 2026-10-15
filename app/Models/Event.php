@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class Event extends Model
 {
@@ -42,5 +44,16 @@ public function ticketsRemaining(): int
 public function tickets()
 {
     return $this->hasManyThrough(Ticket::class, Booking::class);
+}
+
+protected static function booted(): void
+{
+    static::saved(fn () => static::flushListingCache());
+    static::deleted(fn () => static::flushListingCache());
+}
+
+public static function flushListingCache(): void
+{
+    DB::table('cache')->where('key', 'like', '%events:%')->delete();
 }
 }

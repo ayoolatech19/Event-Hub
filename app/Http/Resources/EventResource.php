@@ -16,7 +16,7 @@ class EventResource extends JsonResource
     {
         return[
             'id' => $this->id,
-            'category_id' => $this->category_id,
+            // 'category_id' => $this->category_id,
             'title' => $this->title,
             'description' => $this->description,
             'venue' => $this->venue,
@@ -28,6 +28,8 @@ class EventResource extends JsonResource
             'price_formatted' => 'NGN ' . number_format($this->price / 100, 2),
             'banner_image' => $this->banner_image ? asset('storage/' . $this->banner_image) : null,
             'status' => $this->status,
+              'category' => new CategoryResource($this->whenLoaded('category')),
+    'organizer' => new UserResource($this->whenLoaded('organizer')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
